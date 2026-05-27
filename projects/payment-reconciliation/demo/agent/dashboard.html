@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--
+  Agent Dashboard Template
+
+  IMPORTANT: If you add dynamic data loading (fetch, XMLHttpRequest, etc.),
+  you MUST use a web server to avoid CORS errors.
+
+  To view dynamic dashboards:
+    ./serve-dashboard.sh
+    Then open: http://localhost:8000/dashboard.html
+
+  Opening as file:// will fail for dynamic content.
+-->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Reconciliation Dashboard</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+    <style>
+        body { padding: 2rem; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+        .stat-card { background: var(--pico-card-background-color); padding: 1.5rem; border-radius: var(--pico-border-radius); }
+        .stat-card h3 { margin-bottom: 0.5rem; font-size: 0.9rem; opacity: 0.7; }
+        .stat-card .value { font-size: 2rem; font-weight: bold; }
+        .stat-card.matched .value { color: #28a745; }
+        .stat-card.partial .value { color: #ffc107; }
+        .stat-card.unknown .value { color: #dc3545; }
+        table { width: 100%; margin-top: 1rem; }
+        th { text-align: left; }
+        .status-badge { padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.8rem; font-weight: bold; }
+        .status-OPEN { background: #e3f2fd; color: #1976d2; }
+        .status-MATCHED { background: #e8f5e9; color: #388e3c; }
+        .status-PARTIAL { background: #fff3e0; color: #f57c00; }
+        .status-UNKNOWN { background: #ffebee; color: #d32f2f; }
+        .status-UNPAID { background: #fce4ec; color: #c2185b; }
+        .status-PAID { background: #e8f5e9; color: #388e3c; }
+    </style>
+</head>
+<body>
+    <main class="container">
+        <h1>💰 Payment Reconciliation Dashboard</h1>
+        <p>Real-time payment and invoice tracking</p>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>Total Payments</h3>
+                <div class="value" id="total-payments">--</div>
+            </div>
+            <div class="stat-card matched">
+                <h3>Matched</h3>
+                <div class="value" id="matched-payments">--</div>
+            </div>
+            <div class="stat-card partial">
+                <h3>Partial</h3>
+                <div class="value" id="partial-payments">--</div>
+            </div>
+            <div class="stat-card unknown">
+                <h3>Unknown</h3>
+                <div class="value" id="unknown-payments">--</div>
+            </div>
+        </div>
+
+        <article>
+            <h2>Recent Payments</h2>
+            <div id="payments-table">Loading...</div>
+        </article>
+
+        <article>
+            <h2>Outstanding Invoices</h2>
+            <div id="invoices-table">Loading...</div>
+        </article>
+
+        <footer style="text-align: right; opacity: 0.5; margin-top: 2rem;">
+            Auto-refreshes every 10 seconds
+        </footer>
+    </main>
+
+    <script>
+        function parseCSV(text) {
+            const lines = text.trim().split('\n');
+            const headers = lines[0].split(',');
+            return lines.slice(1).map(line => {
+                const values = line.split(',');
+                const obj = {};
+                headers.forEach((header, i) => {
+                    obj[header] = values[i] || '';
+                });
+                return obj;
+            });
+        }
+
+        async function loadDashboard() {
+            try {
+                // Load payments
+                const paymentsResponse = await fetch('data/payments.csv');
+                const paymentsText = await paymentsResponse.text();
+                const payments = parseCSV(paymentsText);
+
+                // Load invoices
+                const invoicesResponse = await fetch('data/invoices.csv');
+                const invoicesText = await invoicesResponse.text();
+                const invoices = parseCSV(invoicesText);
+
+                // Update stats
+                const total = payments.length;
+                const matched = payments.filter(p => p.status === 'MATCHED').length;
+                const partial = payments.filter(p => p.status === 'PARTIAL').length;
+                const unknown = payments.filter(p => p.status === 'UNKNOWN').length;
+
+                document.getElementById('total-payments').textContent = total;
+                document.getElementById('matched-payments').textContent = matched;
+                document.getElementById('partial-payments').textContent = partial;
+                document.getElementById('unknown-payments').textContent = unknown;
+
+                // Update payments table
+                const paymentsTable = `
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Payment ID</th>
+                                <th>Customer</th>
+                                <th>Amount</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${payments.slice(0, 10).map(p => `
+                                <tr>
+                                    <td>${p.payment_id}</td>
+                                    <td>${p.customer_name}</td>
+                                    <td>$${parseFloat(p.amount).toFixed(2)}</td>
+                                    <td>${p.payment_date}</td>
+                                    <td><span class="status-badge status-${p.status}">${p.status}</span></td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                `;
+                document.getElementById('payments-table').innerHTML = paymentsTable;
+
+                // Update invoices table (only unpaid/partial)
+                const outstandingInvoices = invoices.filter(i => i.status !== 'PAID');
+                const invoicesTable = `
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Invoice ID</th>
+                                <th>Customer</th>
+                                <th>Amount</th>
+                                <th>Due Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${outstandingInvoices.slice(0, 10).map(i => `
+                                <tr>
+                                    <td>${i.invoice_id}</td>
+                                    <td>${i.customer_name}</td>
+                                    <td>$${parseFloat(i.amount).toFixed(2)}</td>
+                                    <td>${i.due_date}</td>
+                                    <td><span class="status-badge status-${i.status}">${i.status}</span></td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                `;
+                document.getElementById('invoices-table').innerHTML = invoicesTable;
+
+            } catch (error) {
+                console.error('Error loading dashboard:', error);
+                document.getElementById('payments-table').innerHTML = '<p>Error loading data. Make sure to run ./serve-dashboard.sh</p>';
+            }
+        }
+
+        // Load initially
+        loadDashboard();
+
+        // Auto-refresh every 10 seconds
+        setInterval(loadDashboard, 10000);
+    </script>
+</body>
+</html>

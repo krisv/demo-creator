@@ -1,0 +1,8 @@
+invoice_id,customer_name,amount,issue_date,due_date,status,notes
+INV-001,Acme Corp,5000.00,2026-05-27,2026-06-15,PAID,Paid in full by PAY-001
+INV-002,TechStart Inc,12500.00,2026-05-27,2026-06-20,PAID,Paid in full by PAY-002 ($6250) and PAY-005 ($6250)
+INV-003,Global Solutions,8750.00,2026-05-27,2026-06-18,PAID,Paid in full by PAY-003
+INV-004,DataCo,3200.00,2026-05-27,2026-06-22,UNPAID,Database optimization services - PAY-007 overpayment issue
+INV-005,Acme Corp,7500.00,2026-05-27,2026-06-25,PAID,Paid in full by PAY-006
+INV-006,NewClient LLC,15000.00,2026-05-27,2026-06-30,UNPAID,Enterprise software license
+INV-007,DataCo,4800.00,2026-05-27,2026-06-28,UNPAID,Additional database services for Q2

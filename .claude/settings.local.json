@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python news_retriever.py:*)",
+      "Bash(python .claude/skills/news-service/news_monitor.py:*)",
+      "Bash(python .claude/skills/log/log.py:*)",
+      "Bash(python .claude/skills/agent-inbox/log_task.py:*)"
+    ]
+  }
+}

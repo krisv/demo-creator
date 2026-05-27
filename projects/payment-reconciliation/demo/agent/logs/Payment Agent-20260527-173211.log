@@ -1,0 +1,21 @@
+Agent Instruction:
+Reconcile open payments against invoices
+
+
+[+00:00:05] PHASE: Read Context
+[+00:00:05] THINKING: Reading payments and invoices for reconciliation
+
+[+00:00:12] PHASE: Reconcile
+[+00:00:12] THINKING: Processing 4 OPEN payments: PAY-005, PAY-006, PAY-007, PAY-008
+[+00:00:58] THINKING: PAY-005: MATCHED - Invoice INV-002 found, customer 'TechStart Inc' matches, amount 250 completes the invoice (was PARTIAL with 250 remaining)
+[+00:01:01] THINKING: PAY-006: MATCHED - Invoice INV-005 found, customer 'Acme Corp' matches, amount 500 exactly matches invoice amount
+[+00:01:02] THINKING: PAY-007: UNKNOWN - Invoice INV-004 found, customer 'DataCo' matches, but payment amount 500 exceeds invoice amount 200 by 00. Potential overpayment or error.
+[+00:01:02] THINKING: PAY-008: UNKNOWN - No invoice_id provided, no matching invoice found for customer 'Tech Solutions Group'. Requires manual investigation.
+
+[+00:01:12] PHASE: Update Files
+[+00:01:12] THINKING: Updating payment and invoice statuses based on reconciliation
+[+00:01:44] TOOL CALL: Write data/payments.csv
+[+00:01:44] TOOL RESULT: Updated 4 payment statuses: 2 MATCHED, 2 UNKNOWN
+[+00:01:44] TOOL CALL: Write data/invoices.csv
+[+00:01:44] TOOL RESULT: Updated 3 invoice statuses: INV-002 and INV-005 to PAID, INV-004 noted overpayment issue
+[+00:01:51] OUTPUT: Reconciliation complete: 4 payments processed - 2 matched, 0 partial, 2 unknown. PAY-007 overpayment (00 excess) and PAY-008 no invoice reference require manual review.

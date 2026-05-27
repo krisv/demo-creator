@@ -1,0 +1,9 @@
+payment_id,invoice_id,customer_name,amount,payment_date,status,notes
+PAY-001,INV-001,Acme Corp,5000.00,2026-05-25,MATCHED,Fully matched to INV-001
+PAY-002,INV-002,TechStart Inc,6250.00,2026-05-26,PARTIAL,Partial payment - $6250 remaining on INV-002
+PAY-003,INV-003,Global Solutions,8750.00,2026-05-26,MATCHED,Fully matched to INV-003
+PAY-004,,DataCorp,3200.00,2026-05-27,UNKNOWN,Customer name mismatch with INV-004 (DataCo)
+PAY-005,INV-002,TechStart Inc,6250.00,2026-06-01,MATCHED,Completes INV-002 - second partial payment of $6250
+PAY-006,INV-005,Acme Corp,7500.00,2026-06-02,MATCHED,Fully matched to INV-005
+PAY-007,INV-004,DataCo,3500.00,2026-06-03,UNKNOWN,Overpayment - exceeds INV-004 amount ($3200) by $300
+PAY-008,,Tech Solutions Group,1200.00,2026-06-04,UNKNOWN,No invoice reference found - requires manual investigation

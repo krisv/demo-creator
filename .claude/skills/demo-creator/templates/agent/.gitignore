@@ -1,0 +1,7 @@
+.apikey
+.newsservice
+.agentinbox
+logs/
+__pycache__/
+*.pyc
+.env

@@ -1,0 +1,21 @@
+Agent Instruction:
+Payment reconciliation: Match open payments to invoices and update statuses
+
+
+[+00:00:06] PHASE: Read Context
+[+00:00:06] THINKING: Reading payments and invoices for reconciliation
+
+[+00:00:22] PHASE: Reconcile
+[+00:00:22] THINKING: Processing 4 OPEN payments
+[+00:00:36] THINKING: PAY-001: MATCHED - Exact match with INV-001
+[+00:00:37] THINKING: PAY-002: PARTIAL - ,250 paid of 2,500 invoice
+[+00:00:37] THINKING: PAY-003: MATCHED - Exact match with INV-003
+[+00:00:38] THINKING: PAY-004: UNKNOWN - Customer name mismatch (DataCorp vs DataCo)
+
+[+00:01:11] PHASE: Update Files
+[+00:01:11] THINKING: Updating payment and invoice statuses
+[+00:01:34] TOOL CALL: Write data/payments.csv
+[+00:01:34] TOOL RESULT: Updated 4 payment statuses: 2 MATCHED, 1 PARTIAL, 1 UNKNOWN
+[+00:01:36] TOOL CALL: Write data/invoices.csv
+[+00:01:36] TOOL RESULT: Updated 3 invoice statuses: 2 PAID, 1 PARTIAL
+[+00:01:55] OUTPUT: Reconciled 4 payments: 2 matched, 1 partial, 1 unknown. Manual review needed for PAY-004 (DataCorp vs DataCo mismatch).

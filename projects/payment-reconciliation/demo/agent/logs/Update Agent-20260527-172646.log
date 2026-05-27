@@ -1,0 +1,60 @@
+Agent Instruction:
+# Payment Reconciliation Agent
+
+Two specialized agents working together to reconcile payments and invoices.
+
+## Agent Names
+
+- **Payment Agent** - Reconciles open payments against invoices
+- **Update Agent** - Processes news updates to add new payments and invoices
+
+Use these exact names for logging and memory operations.
+
+## Scenario
+
+A finance department receives payments and issues invoices daily. The system needs to:
+1. Match incoming payments to their corresponding invoices
+
+... (rest of instructions truncated, see AGENTS.md for full details)
+
+
+[+00:00:00] PHASE: Fetch News
+[+00:00:00] TOOL CALL: Read preferences file: preferences.md
+[+00:00:00] TOOL RESULT: Preferences file does not exist. Using defaults: no label filters, no exclusions.
+[+00:00:00] THINKING: Loading last seen article from memory
+[+00:00:00] TOOL CALL: Read memory file: article_memory.json
+[+00:00:00] TOOL RESULT: Last seen article: a7862815-1269-454f-8e30-4c0ed59a7b85
+[+00:00:00] THINKING: Fetching latest news articles
+[+00:00:00] THINKING: Requesting articles newer than: a7862815-1269-454f-8e30-4c0ed59a7b85
+[+00:00:00] TOOL CALL: GET http://localhost:8849//api/news?max_results=100&last_seen=a7862815-1269-454f-8e30-4c0ed59a7b85
+[+00:00:00] TOOL RESULT: Retrieved 7 articles
+[
+  {
+    "comments": [],
+    "content": "Invoice INV-007 issued to DataCo for $4,800.00. Additional database services for Q2. Due date: 2026-06-28.",
+    "id": "9bf2ec33-edaa-48f2-8eb6-6b70937db314",
+    "labels": [
+      "type:invoice",
+      "customer:dataco"
+    ],
+    "source_url": null,
+... (75 more lines)
+
+[+00:00:08] PHASE: Read Context
+[+00:00:08] THINKING: Reading current payments and invoices
+
+[+00:00:13] PHASE: Analyze
+[+00:00:13] THINKING: Analyzing news updates for new transactions: Found 4 new payments (PAY-005, PAY-006, PAY-007, PAY-008) and 2 new invoices (INV-006, INV-007)
+
+[+00:00:23] PHASE: Update Files
+[+00:00:23] THINKING: Adding new transactions to CSV files
+[+00:04:30] TOOL CALL: Write data/payments.csv
+[+00:04:30] TOOL RESULT: Added 4 payments: PAY-005, PAY-006, PAY-007, PAY-008
+[+00:04:30] TOOL CALL: Write data/invoices.csv
+[+00:04:30] TOOL RESULT: Added 2 invoices: INV-006, INV-007
+
+[+00:04:31] PHASE: Finalize
+[+00:04:31] THINKING: Updating memory with most recent article 9bf2ec33-edaa-48f2-8eb6-6b70937db314
+[+00:04:31] TOOL CALL: Write memory file: article_memory.json
+[+00:04:31] TOOL RESULT: Saved last seen article ID: 9bf2ec33-edaa-48f2-8eb6-6b70937db314
+[+00:04:35] OUTPUT: Added 4 new payments (PAY-005, PAY-006, PAY-007, PAY-008) and 2 new invoices (INV-006, INV-007). Notable: PAY-007 exceeds invoice amount, PAY-008 has no invoice reference.

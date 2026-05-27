@@ -1,0 +1,22 @@
+database:
+  # PostgreSQL connection settings
+  # The service will fall back to in-memory storage if connection fails
+  host: host.docker.internal
+  port: {{INBOX_DB_PORT}}
+  database: agent_inbox
+  username: {{INBOX_DB_USER}}
+  password: {{INBOX_DB_PASSWORD}}
+
+  # Connection pool settings
+  min_connections: 1
+  max_connections: 10
+
+  # Retry settings
+  connection_timeout: 5  # seconds
+  max_retries: 3
+
+security:
+  # API key for all endpoints (both read and write operations)
+  # Leave empty to disable authentication
+  # Can be overridden with API_KEY environment variable
+  api_key: "{{API_KEY}}"

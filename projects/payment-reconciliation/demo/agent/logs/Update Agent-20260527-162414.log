@@ -1,0 +1,59 @@
+Agent Instruction:
+# Payment Reconciliation Agent
+
+Two specialized agents working together to reconcile payments and invoices.
+
+## Agent Names
+
+- **Payment Agent** - Reconciles open payments against invoices
+- **Update Agent** - Processes news updates to add new payments and invoices
+
+Use these exact names for logging and memory operations.
+
+## Scenario
+
+A finance department receives payments and issues invoices daily. The system needs to:
+1. Match incoming payments to their corresponding invoices
+
+... (rest of instructions truncated, see AGENTS.md for full details)
+
+
+[+00:00:00] PHASE: Fetch News
+[+00:00:00] TOOL CALL: Read preferences file: preferences.md
+[+00:00:00] TOOL RESULT: Preferences file does not exist. Using defaults: no label filters, no exclusions.
+[+00:00:00] THINKING: Loading last seen article from memory
+[+00:00:00] TOOL CALL: Read memory file: article_memory.json
+[+00:00:00] TOOL RESULT: Memory file does not exist, no last seen article
+[+00:00:00] THINKING: Fetching latest news articles
+[+00:00:00] TOOL CALL: GET http://localhost:8849//api/news?max_results=100
+[+00:00:00] TOOL RESULT: Retrieved 9 articles
+[
+  {
+    "comments": [],
+    "content": "Payment PAY-004 received for $3,200.00. No invoice reference provided. Customer name: DataCorp. Payment date: 2026-05-27.",
+    "id": "a7862815-1269-454f-8e30-4c0ed59a7b85",
+    "labels": [
+      "type:payment",
+      "customer:datacorp"
+    ],
+    "source_url": null,
+... (100 more lines)
+
+[+00:00:14] PHASE: Read Context
+[+00:00:14] THINKING: Reading current payments and invoices
+
+[+00:00:24] PHASE: Analyze
+[+00:00:24] THINKING: Analyzing 9 news updates: 4 payments and 5 invoices identified
+
+[+00:00:30] PHASE: Update Files
+[+00:00:30] THINKING: Adding new transactions to CSV files
+[+00:00:53] TOOL CALL: Write data/payments.csv
+[+00:00:53] TOOL RESULT: Added 4 new payments: PAY-001, PAY-002, PAY-003, PAY-004
+[+00:00:58] TOOL CALL: Write data/invoices.csv
+[+00:00:58] TOOL RESULT: Added 5 new invoices: INV-001, INV-002, INV-003, INV-004, INV-005
+
+[+00:01:08] PHASE: Finalize
+[+00:01:08] THINKING: Updating memory with most recent article a7862815-1269-454f-8e30-4c0ed59a7b85
+[+00:01:08] TOOL CALL: Write memory file: article_memory.json
+[+00:01:08] TOOL RESULT: Saved last seen article ID: a7862815-1269-454f-8e30-4c0ed59a7b85
+[+00:01:13] OUTPUT: Added 4 payments (PAY-001 to PAY-004) and 5 invoices (INV-001 to INV-005). All transactions are in OPEN/UNPAID status and ready for reconciliation.

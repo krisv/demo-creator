@@ -1,0 +1,16 @@
+# News Service Configuration for payment-reconciliation-instance
+# Auto-generated on Wed May 27 15:30:27 RST 2026
+
+database:
+  host: host.docker.internal
+  port: 15978
+  database: payment-reconciliation-instance
+  username: newsuser
+  password: i_T4JAE2p98Kct6uNuLOiQ
+  min_connections: 1
+  max_connections: 10
+  connection_timeout: 5
+  max_retries: 3
+
+security:
+  api_key: "fgPx4Jom7_m35Zb6MwFYE2SbDxB0UDInlTxIfgPILo8"
